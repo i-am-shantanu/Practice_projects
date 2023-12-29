@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Reports</title>
+    <style>
+        body{
+            background-color: #a1a1aa;
+            padding: 0px;
+            margin: 0px;
+        }
+        .navbar{
+            background-color: #18181b;
+            height: 80px;
+            color: whitesmoke;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            
+        }
+        .navbar h1{margin: 0px;
+        font-size: 40pt;}
+        .navbar input{
+            height: 30px;
+            width: 25vw;
+            border-radius: 50px;
+            background-color: #a1a1aa;
+            font-size: larger;
+            border: 2px solid black;
+        }
+        button{
+            height: 30px;
+            width: 80px;
+            border-radius: 50px;
+            background-color: #fb923c;
+            font-weight: bolder;
+           color: white;
+        }
+        .message{
+            background-color: #737373;height: 35px;
+            font-size: 20pt;
+            color:red;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        .container{
+            padding: 50px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .card{
+            background-color: #18181b;
+            height: 350px;
+            width:240px;
+            border-radius: 20px;
+            padding: 10px;
+            border-left: 5px solid #f97316;
+            color: white;
+        }
+        .title{display: flex;justify-content: center;font-size: 20pt;margin-bottom: 40px;}
+        .utility{display: block;font-size: 13pt; margin-bottom: 15px;}
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>getWeather( )</h1>
+        <form>
+            <input type="text" placeholder="Enter City Name"><button type="submit">Search</button>
+        </form>
+        <button type="reset" class="reset">Clear</button>
+    </div>
+    <div class="message"><text></text></div>
+    <div class="container">
+        
+    </div>
+</body>
+<script>
+    const form=document.querySelector("form")
+    const resetButton=document.querySelector(".reset")
+
+form.addEventListener("submit",function(e){
+
+        e.preventDefault();
+        const city=form.querySelector("input").value
+        form.querySelector("input").value=''
+        console.log(city)
+
+        const url = `https://foreca-weather.p.rapidapi.com/location/search/${city}`;
+        const options = {
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': 'e1b97e5bedmsh144ff8aede0839fp112f13jsn688a6a521e61',
+            'X-RapidAPI-Host': 'foreca-weather.p.rapidapi.com'
+            }
+        };
+
+        fetch(url,options).then(function(response){
+
+            reset();
+            return response.json()
+        }).then(function(response){
+
+            return(response.locations[0].id)
+        }).then(function(placeId){
+            const curUrl = `https://foreca-weather.p.rapidapi.com/forecast/daily/${placeId}?dataset=full`;
+            return(fetch(curUrl,options))
+        }).then(function(response){
+
+                return response.json()
+        }).then(function(response){
+
+            displayMessage(`Weather information for ${city}`)
+            const targetHtml=document.querySelector(".container")
+
+            
+            for (let i = 0; i < 5; i++) {
+                let obj = response.forecast[i];
+                targetHtml.innerHTML+=`<div class="card">
+                    <text class="title">${obj.date}</text>
+                    <text class="utility">Type : ${obj.symbolPhrase}</text>
+                    <text class="utility">Sunrise Time : ${obj.sunrise}</text>
+                    <text class="utility">Sunset Time : ${obj.sunset}</text>
+                    <text class="utility">Max temp : ${obj.maxTemp}</text>
+                    <text class="utility">Min temp : ${obj.minTemp}</text>
+                    <text class="utility">Max Rel Humidity : ${obj.maxRelHumidity}</text>
+                    <text class="utility">Min Relative humidity : ${obj.minRelHumidity}</text>
+
+
+                </div>`
+                
+            }
+               
+                
+            
+        
+        })
+        .catch(function(error)
+        {   
+            displayMessage("Somethinng Went Wrong")
+            console.log(error)
+        })
+})
+
+resetButton.addEventListener("click",reset)
+
+function reset(){
+    document.querySelector(".message").innerText=``
+    document.querySelector(".container").innerHTML=``;
+}
+
+function displayMessage(message){
+    const mssg=document.querySelector(".message")
+    mssg.innerText=message;
+}
+
+
+</script>
+</html>

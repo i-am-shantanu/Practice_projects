@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guess The Number</title>
+    <style>
+
+        body{
+            background-color: grey;
+            padding: 0px;
+            margin: 0px;
+        }
+        .title{
+            background-color: black;
+            color: whitesmoke;
+            height: 40px;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+
+        }
+        .container{
+            background-color: #27272a;
+            height: 60vh;
+            width: 50vw;
+            margin-left: 25vw;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            color: whitesmoke;
+            
+        }
+        .utility{
+            display: flex;
+            justify-content: center;
+            font-size: large;
+            padding: 5px;
+        }
+        button{
+            background-color: orange;
+            border: none;
+            border-radius: 50px;
+            height: 30px;
+            width: 70px;
+            color: white;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 5px;
+
+        }
+        .green{color: greenyellow;}
+        .red{color:red}
+    </style>
+</head>
+<body>
+    <div class="title"><h2>Number Guessing Game</h2></div>
+    <div class="container">
+        <div class="utility"><text>Try and guess a number between 1 and 100</text></div>
+        <div class="utility"><text>You have total 10 attempts to guess the right Number</text></div>
+        <form>
+            <div class="utility final"><h1>Guess a Number</h1></div>
+            <div class="utility"><input type="text" id="guessNumber"></div>
+            <div class="utility"><button type="submit">Submit</button></div>
+
+        </form>
+        <div class="utility guess">Previous Guess : </div>
+        <div class="utility attempts">Attempts Remaining : <span>10</span></div>
+        <div class="utility message"></div>
+        <div class="utility restart"></div>
+    </div>
+</body>
+<script>
+ const Rnum=Math.floor((Math.random()*100)+1)
+ const form=document.querySelector("form")
+ const messageBlock=document.querySelector(".message")
+ const userInput=form.querySelector("input")
+ const prevGuess=document.querySelector(".guess")
+ const RemainingAttempts=document.querySelector(".attempts span")
+ let attempt=1
+ let playgame=true
+ form.addEventListener("submit",function(e){
+    e.preventDefault()
+    userGuess=parseInt(userInput.value)
+    userInput.value=''
+
+    if(playgame)
+    {
+        if(!validateUserInput(userGuess))
+        displayMessage("Invalid Input")
+        else
+        {
+            attempt++;
+            checkUserInput(userGuess)
+            modifyFields(userGuess)
+
+            
+            if(attempt===11)
+            {
+                playgame=false;
+            }
+
+        }
+
+    }
+    else
+    {
+        displayMessage(`Oops Failed !! ${Rnum} was the Number`)
+        restart()
+    }
+
+
+ })
+
+ function validateUserInput(num){
+    if(isNaN(num) || num<=0 || num>=100)
+    return false
+    else return true
+ }
+
+ function displayMessage(message){
+    messageBlock.innerHTML=`<text>${message}<text>`
+
+ }
+
+ function checkUserInput(num){
+    if(num===Rnum)
+    {
+        displayMessage("Success !!")
+        document.querySelector("form button").disabled=true
+        restart()
+
+    }
+    
+    else if(num<Rnum)
+    displayMessage("Guess is TOOO Low !!")
+    else
+    displayMessage("Guess is TOOO high !!")
+
+ }
+
+ function modifyFields(num){
+    prevGuess.innerText+=` ${num}`
+    RemainingAttempts.innerText=`${11-attempt}`
+}
+
+function restart()
+{
+
+    const restartButton=document.querySelector(".restart")
+    restartButton.innerHTML=`<button>Restart</button>`
+        restartButton.addEventListener("click",function(){
+            attempt=1;
+            prevGuess.innerText=`Previous Guess :`
+            RemainingAttempts.innerText=`10`
+            messageBlock.innerText=""
+            playgame=true;
+            document.querySelector("form button").disabled=false
+        })
+}
+
+</script>
+</html>

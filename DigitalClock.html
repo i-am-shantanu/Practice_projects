@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Digi | Time</title>
+    <style>
+        body{
+            background-color:black;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .clock{
+        height: 60px;
+        width: 350px;
+        background-color: orange;
+        border-radius: 15px;
+        padding: 15px;
+        color: white;
+        font-size: 40pt;
+    }
+    </style>
+</head>
+<body>
+    <div class="clock">
+    </div>
+</body>
+<script>
+    let clock=document.querySelector(".clock")
+    setInterval(function(){
+        let time=new Date();
+        clock.innerHTML=`<text>${time.toLocaleTimeString()}</text>`
+    },1000)
+</script>
+</html>
